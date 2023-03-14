@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/Users/padmavathimantena/node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="/Users/padmavathimantena/node_modules/bootstrap-icons/font/bootstrap-icons.css">
+
+   <script>
+       var p,r,n;
+       function changeAmount(){
+           p=document.getElementById('amount').value=document.getElementById('amountrange').value;
+       }
+
+       function changeYear(){
+        r=document.getElementById('year').value=document.getElementById('yearange').value;
+       }
+
+       function changeInterest(){
+        n=document.getElementById('interest').value=document.getElementById('interestrange').value;
+       }
+
+       function calculator(){
+         var msg=document.getElementById('msg').innerHTML=`EMI value per month= ${Math.round((p * r/12) * [(1+r/12) ** n] / [(1+r/12) ** n-1])}`;
+       }
+
+   </script>
+
+</head>
+
+<body class="container-fluid">
+    
+    <div class="position-fixed bottom-50 ms-5">
+
+        <div class="row">
+            <div class="col input-group">
+               <span>Amount you need</span>
+               <input type="text" class="form-control ms-2" id="amount"> 
+            </div>
+
+            <div class="col input-group">
+                <span>For</span>
+                <input type="text" class="form-control mx-2" id="year"> 
+                <span>Years</span>
+             </div>
+
+             <div class="col input-group">
+                <span>Interest rate</span>
+                <input type="text" class="form-control mx-2" id="interest"> 
+                <span>%</span>
+             </div>
+        </div>
+        
+        <div class="row mt-3">
+            <div class="col">
+                <input type="range" class="form-range" max="4000000" min="50000" id="amountrange" onchange="changeAmount()">
+                <div>
+                   <span> &#8377; 50,000 &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+                   <span> &#8377; 40,00,000</span>
+                </div>
+            </div>
+
+            <div class="col">
+                <input type="range" class="form-range" max="5" min="1" id="yearange" onchange="changeYear()">
+                <div>
+                   <span> 1 Year &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </span>
+                   <span> 5 Year</span>
+                </div>
+            </div>
+
+            <div class="col">
+                <input type="range" class="form-range" max="21" min="10.5" id="interestrange" onchange="changeInterest()">
+                <div>
+                   <span>10.5 % &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;  &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span>
+                   <span>21 %</span>
+                </div>
+            </div>
+        </div>
+
+       <center><button class="btn btn-primary mt-4" onclick="calculator()">Calculate</button></center> 
+       <div id="msg">
+
+       </div>
+    </div>
+
+
+
+    <script src="/Users/padmavathimantena/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/Users/padmavathimantena/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+</body>
+
+</html>

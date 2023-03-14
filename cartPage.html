@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="/Users/padmavathimantena/node_modules/bootstrap/dist/css/bootstrap.css">
+        <link rel="stylesheet" href="/Users/padmavathimantena/node_modules/bootstrap-icons/font/bootstrap-icons.css">
+
+        <style>
+            .cart{
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style>
+
+        <script>
+
+            var cartItems = [];
+
+            function loadProducts(data){
+
+                  var cardContainer = document.getElementById('cardContainer');
+                  cardContainer.innerHTML="";
+
+                    for(var product of data){
+
+                          var div = document.createElement('div');
+                          div.className = "card m-2 text-center w-25 ms-5";
+
+                          div.innerHTML = `
+                             
+                               <div>
+                                   <img src=${product.image} height="200px">
+
+                                   <div class="card-header" style="height:100px;">
+                                      <h6>${product.title}</h6>
+                                   </div>
+
+                                   <div class="card-footer">
+                                      <p>${product.price}</p>
+                                      <div class="d-grid">
+                                        <button class="btn btn-danger" onclick="addToCartClick(${product.id});"><span class="bi bi-cart"></span>Add Cart</button>
+                                      </div>
+                                   </div>
+                               </div>
+                                   
+                           `;
+                           cardContainer.appendChild(div);
+
+                    }
+
+
+            }
+
+             function bodyload(){
+
+                var lstCategory = document.getElementById('lstCategory');
+
+              fetch("https://fakestoreapi.com/products/categories")
+              .then(function(response){
+                  return response.json();
+              })
+              .then(function(data){
+
+                   data.unshift('all');
+
+                    for(var category of data){
+
+                         var opt = document.createElement('option');
+                         opt.text = category.toUpperCase();
+                         opt.value=category;
+                         lstCategory.appendChild(opt);
+                    }
+
+
+              });
+
+              fetch("https://fakestoreapi.com/products")
+                    .then(function(response){
+                    return response.json();
+                  })
+                   .then(function(data){
+       
+                      loadProducts(data);        
+                  
+                   });
+            
+          }
+
+            function categoryChange(){
+
+                var categoryName = document.getElementById('lstCategory').value;
+
+                if(categoryName=="all"){
+
+                    fetch("https://fakestoreapi.com/products")
+                    .then(function(response){
+                    return response.json();
+                  })
+                   .then(function(data){
+       
+                      loadProducts(data);        
+                  
+                   });
+
+                }
+            else{
+
+                fetch(`https://fakestoreapi.com/products/category/${categoryName}`)
+                .then(function(response){
+                    return response.json();
+                })
+                .then(function(data){
+                    
+                    loadProducts(data);
+
+                });
+
+            }
+
+            }  
+
+            function getProductById(id){
+
+                   fetch(`https://fakestoreapi.com/products/${id}`)
+                   .then(function(response){
+                      return response.json();
+                   })
+                   .then(function(data){
+                      
+                        cartItems.push(data);
+                        getCount();
+                     
+                   });
+
+            }
+
+            function getCount(){
+                  
+                document.getElementById('count').innerHTML=cartItems.length;
+            }
+
+            function addToCartClick(id){
+                 
+                getProductById(id); 
+
+            }
+
+            function displayCartItems(){
+                 
+                  var tableBody = document.getElementById('tableBody');
+                  tableBody.innerHTML="";
+
+                  for(var item of cartItems){
+
+                     var tr = document.createElement('tr');
+                     var tdName = document.createElement('td');
+                     var tdPrice = document.createElement('td');
+                     var tdPhoto = document.createElement('td');
+
+                     tdName.innerHTML =item.title;
+                     tdPrice.innerHTML = item.price;
+
+                     var img = document.createElement('img');
+
+                     img.src =item.image;
+                     img.height = "200";
+                     img.width = "200";
+
+                     tdPhoto.appendChild(img);
+
+                     tr.appendChild(tdName);
+                     tr.appendChild(tdPrice);
+                     tr.appendChild(tdPhoto);
+
+                     tableBody.appendChild(tr);
+
+                 }
+
+
+            }
+
+        </script>
+
+    </head>
+
+    <body class="container-fluid" onload="bodyload();">
+       <div class="text-center mt-3 bg-danger p-3 text-light">
+
+          <header class="d-flex justify-content-between p-3">
+            <h3><span class="bi bi-cart4"> Shopping Cart</span></h3>
+            <div class="position-relative">
+               <button class="btn btn-primary text-light cart" onclick="displayCartItems();" data-bs-target="#modalItems" data-bs-toggle="modal">Add Cart</button>
+               <span class="badge position-absolute translate-middle bg-dark start-100 cart" id="count"> <span class="bi bi-cart"></span>0</span>
+            </div>
+          </header>
+       
+       </div>
+
+       <div class="row">
+            <div class="col-3">
+                <label class="form-label mt-3"><b>Select Category</b></label>
+
+                <select onchange="categoryChange()" class="form-select" id="lstCategory">
+                       
+                </select>
+            </div>
+
+            <div class="col-9">
+                <div class="d-flex flex-row flex-wrap mt-3" id="cardContainer">
+
+                </div>
+            </div>
+       </div>
+    
+       <div class="modal" id="modalItems">
+
+         <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <h3>Cart Items</h3>
+                    <button class="btn btn-close" data-bs-dismiss="modal"></button>
+
+                </div>
+
+                <div class="modal-body" id="bodyContainer">
+
+                 <table class="table table-hover table-scrollable table-responsive">
+
+                    <thead class="text-center text-danger">
+                         <th>Name</th>
+                         <th>Price</th>
+                         <th>Preview</th>
+                    </thead>
+
+                    <tbody id="tableBody">
+
+                    </tbody>
+
+                 </table>
+                    
+                </div>
+
+                <div class="modal-footer">
+                     <button class="btn btn-primary" data-bs-dismiss="modal">Ok</button>
+                </div>
+
+            </div>
+
+        </div>
+
+      </div>
+
+
+
+
+        <script src="/Users/padmavathimantena/node_modules/jquery/dist/jquery.js"></script>
+        <script src="/Users/padmavathimantena/node_modules/bootstrap/dist/js/bootstrap.bundle.js"></script>
+    </body>
+</html>
